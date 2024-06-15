@@ -1,14 +1,13 @@
 import  { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
 import AuthInput from '../components/AuthInput'; 
 import AuthButton from '../components/AuthButton'; 
 import {Link} from "react-router-dom";
+import useAuth from '../hooks/auth-hook';
 
 export default function SignIn() {
   const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const {login} = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,27 +16,36 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    // Replace this with your actual API call
-    const success = await mockSignIn(form.email, form.password);
     
-    setLoading(false);
+    try{
+    
+      const res = await fetch(`${import.meta.env.VITE_BE_HOST}/api/user/log-in`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email:form.email, password:form.password }),
+      });
+      
+      setLoading(false);
 
-    if (success) {
-      navigate('/'); // Navigate to the home page
-    } else {
-      setError('Failed to sign in');
+      if (res.ok) {
+        const { message, token, user } = await res.json();
+        alert(message);
+        const {id} = user;
+        login(token,null,id);
+      } else {
+        const errorData = await res.json();
+        alert(errorData.message || 'Failed to sign up');
+      }
+    }catch(err){
+      console.error(err);
+      setLoading(false);
     }
+    
   };
 
-    // Mock sign-in function for demonstration purposes
-    const mockSignIn = (email, password) => {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(email === 'test@example.com' && password === 'password');
-          }, 1000);
-        });
-      };
+
 
   return (
     <div className="min-h-screen bg-dark_bg_1 flex items-center justify-center py-[15px] overflow-hidden">
@@ -65,7 +73,6 @@ export default function SignIn() {
           />
           <AuthButton label="Sign In" type="submit" loading={loading} />
         </form>
-        {error && <p className="text-center text-red-500 mb-[10px]">{error}</p>}
         <p className="text-center text-dark_text_1">
           You do not have an account?{' '}
           <Link to="/sign-up" className="text-blue-500 hover:underline"> 
