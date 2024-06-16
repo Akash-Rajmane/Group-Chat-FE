@@ -9,7 +9,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #111B21;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -31,5 +31,44 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .input-width {
+    width: calc(70% - 170px);
+  }
+
+  .chat-content {
+    height: calc(100% - 130px);
+  }
+
+  .list{
+    max-height: calc(100% - 125px);
+  }
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
 }
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #444e54; 
+  border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #545e64;  
+}
+
+
+
+ 
+}
+
+
 
